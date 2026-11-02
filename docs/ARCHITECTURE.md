@@ -65,14 +65,14 @@ Paired with [`docs/PRD.md`](./PRD.md). Update this doc as decisions are made.
 
 Build in this order and stop after each component for human review/commit.
 
-| # | Component | Contents |
-|---|-----------|----------|
-| 1 | Data layer | Room entities (`Song`, `Playlist`, `PlaylistEntry`), DAOs, `AppDatabase`, `SongRepository` + `PlaylistRepository` (Room impls) |
-| 2 | Import pipeline | SAF picker / share / open-with → hash → pdfium validate → copy `<uuid>.pdf` → persist; async per-file results |
-| 3 | Library screen | Flat list, rename, search, sort, multi-select delete, import trigger |
-| 4 | Playlists | List → detail, drag-reorder / swipe-remove, rename/delete, missing-file drop, queue to reader |
-| 5 | Reader skeleton | pdfium → one page fit in `SurfaceView`; pre-render queue + bitmap cache as pure Kotlin |
-| 6 | Full reader gestures | pinch zoom, pan, tap zones, boundaries/toasts, bottom bar, immersive + keep-awake |
+| # | Component            | Contents                                                                                                                       |
+|---|----------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| 1 | Data layer           | Room entities (`Song`, `Playlist`, `PlaylistEntry`), DAOs, `AppDatabase`, `SongRepository` + `PlaylistRepository` (Room impls) |
+| 2 | Import pipeline      | SAF picker / share / open-with → hash → pdfium validate → copy `<uuid>.pdf` → persist; async per-file results                  |
+| 3 | Library screen       | Flat list, rename, search, sort, multi-select delete, import trigger                                                           |
+| 4 | Playlists            | List → detail, drag-reorder / swipe-remove, rename/delete, missing-file drop, queue to reader                                  |
+| 5 | Reader skeleton      | pdfium → one page fit in `SurfaceView`; pre-render queue + bitmap cache as pure Kotlin                                         |
+| 6 | Full reader gestures | pinch zoom, pan, tap zones, boundaries/toasts, bottom bar, immersive + keep-awake                                              |
 
 ## 6. Decisions log
 

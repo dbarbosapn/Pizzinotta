@@ -8,18 +8,18 @@
 
 An open-source Android app for reading sheet music from PDF files. It is fast, light, and built for musicians: playlists (setlists), and a reader driven by tap gestures so the user can turn pages without hunting for buttons.
 
-| Item | Decision |
-|---|---|
-| App name | Pizzinotta |
-| Package ID | `com.github.dbarbosapn.pizzinotta` (permanent once on Play) |
-| Platform | Android only, native Kotlin |
-| Min SDK | 26 (Android 8.0) |
-| Form factors | Phones and tablets; tablets (music stand use) are the primary use case |
-| Input format | PDF only |
-| Distribution | Google Play |
-| Price | Free, no ads |
-| Source | Open-source, Apache-2.0 |
-| Languages | English only; all strings externalised in `strings.xml` so translations can be contributed |
+| Item         | Decision                                                                                   |
+|--------------|--------------------------------------------------------------------------------------------|
+| App name     | Pizzinotta                                                                                 |
+| Package ID   | `com.github.dbarbosapn.pizzinotta` (permanent once on Play)                                |
+| Platform     | Android only, native Kotlin                                                                |
+| Min SDK      | 26 (Android 8.0)                                                                           |
+| Form factors | Phones and tablets; tablets (music stand use) are the primary use case                     |
+| Input format | PDF only                                                                                   |
+| Distribution | Google Play                                                                                |
+| Price        | Free, no ads                                                                               |
+| Source       | Open-source, Apache-2.0                                                                    |
+| Languages    | English only; all strings externalised in `strings.xml` so translations can be contributed |
 
 ---
 
@@ -125,22 +125,22 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 #### 3.4.3 Tap zones
 Zones are measured against the **screen width**, full height:
 
-| Zone | Width |
-|---|---|
-| Left edge | 25% |
-| Center | 50% |
-| Right edge | 25% |
+| Zone       | Width |
+|------------|-------|
+| Left edge  | 25%   |
+| Center     | 50%   |
+| Right edge | 25%   |
 
 Gesture detection uses the **OS-default single-tap and double-tap timing**. There is no custom latency or custom double-tap window.
 
-| Gesture | Zone | Action |
-|---|---|---|
-| Single tap | Center | Toggle the bottom bar |
-| Double tap | Center | Fit the page to the screen |
-| Single tap | Right edge | Next page |
-| Single tap | Left edge | Previous page |
-| Double tap | Right edge | Next song in the queue |
-| Double tap | Left edge | Previous song in the queue |
+| Gesture    | Zone       | Action                     |
+|------------|------------|----------------------------|
+| Single tap | Center     | Toggle the bottom bar      |
+| Double tap | Center     | Fit the page to the screen |
+| Single tap | Right edge | Next page                  |
+| Single tap | Left edge  | Previous page              |
+| Double tap | Right edge | Next song in the queue     |
+| Double tap | Left edge  | Previous song in the queue |
 
 #### 3.4.4 Boundaries
 - Single tap on the right edge on the **last page** of a song: **nothing happens**.

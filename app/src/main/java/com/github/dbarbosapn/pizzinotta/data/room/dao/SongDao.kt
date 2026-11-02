@@ -15,7 +15,7 @@ interface SongDao {
     @Query("SELECT * FROM songs ORDER BY displayTitle COLLATE NOCASE ASC")
     fun observeByTitle(): Flow<List<SongEntity>>
 
-    @Query("SELECT * FROM songs ORDER BY lastOpenedAt DESC NULLS LAST")
+    @Query("SELECT * FROM songs ORDER BY lastOpenedAt IS NULL, lastOpenedAt DESC")
     fun observeByRecentlyOpened(): Flow<List<SongEntity>>
 
     @Query("SELECT * FROM songs WHERE displayTitle LIKE '%' || :query || '%' COLLATE NOCASE")
