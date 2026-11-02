@@ -27,6 +27,9 @@ interface SongDao {
     @Query("SELECT COUNT(*) > 0 FROM songs WHERE contentHash = :contentHash")
     suspend fun existsByContentHash(contentHash: String): Boolean
 
+    @Query("SELECT * FROM songs WHERE contentHash = :contentHash")
+    suspend fun findSongByContentHash(contentHash: String): SongEntity?
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(song: SongEntity)
 

@@ -10,6 +10,7 @@ interface SongRepository {
     fun observeById(id: UUID): Flow<Song>
     fun observeSearch(query: String): Flow<List<Song>>
     suspend fun existsByContentHash(contentHash: String): Boolean
+    suspend fun findSongByContentHash(contentHash: String): Song?
     suspend fun insert(song: Song)
     suspend fun update(song: Song)
     suspend fun delete(song: Song)

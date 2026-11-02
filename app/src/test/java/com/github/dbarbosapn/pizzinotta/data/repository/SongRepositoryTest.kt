@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.UUID
@@ -33,6 +34,9 @@ class SongRepositoryTest {
 
         override suspend fun existsByContentHash(contentHash: String): Boolean =
             songs.any { it.contentHash == contentHash }
+
+        override suspend fun findSongByContentHash(contentHash: String): SongEntity? =
+            songs.firstOrNull { it.contentHash == contentHash }
 
         override suspend fun insert(song: SongEntity) {
             songs.add(song)
@@ -80,6 +84,16 @@ class SongRepositoryTest {
 
         assertTrue(repo.existsByContentHash("abc123"))
         assertFalse(repo.existsByContentHash("missing"))
+    }
+
+    @Test
+    fun `findSongByContentHash returns the matching song or null`() = runBlocking {
+        val repo = RoomSongRepository(FakeSongDao())
+        val song = newSong("Bach", "bach-hash")
+        repo.insert(song)
+
+        assertEquals(song.id, repo.findSongByContentHash("bach-hash")?.id)
+        assertNull(repo.findSongByContentHash("does-not-exist"))
     }
 
     @Test

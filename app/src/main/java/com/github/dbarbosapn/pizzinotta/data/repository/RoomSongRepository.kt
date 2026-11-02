@@ -24,6 +24,9 @@ class RoomSongRepository(private val dao: SongDao) : SongRepository {
     override suspend fun existsByContentHash(contentHash: String): Boolean =
         dao.existsByContentHash(contentHash)
 
+    override suspend fun findSongByContentHash(contentHash: String): Song? =
+        dao.findSongByContentHash(contentHash)?.toDomain()
+
     override suspend fun insert(song: Song) = dao.insert(song.toEntity())
     override suspend fun update(song: Song) = dao.update(song.toEntity())
     override suspend fun delete(song: Song) = dao.delete(song.toEntity())
