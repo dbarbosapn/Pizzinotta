@@ -26,7 +26,7 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 ## 2. Global constraints
 
 ### 2.1 Performance budgets (Phase 1)
-- APK size: under **10 MB**
+- APK size: **best effort**, target under **10 MB** via ABI splits / app bundle. Not a hard gate — overall runtime performance is the hard requirement.
 - Cold start: under **1.5 s** on a 2 GB RAM, API 26 device
 - Page turn (tap to new page visible): under **150 ms**
 - Adjacent pages (next and previous) are pre-rendered in the background
@@ -40,8 +40,8 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 - **No AGPL or GPL dependencies.** (This explicitly excludes MuPDF.)
 - **Recommended library: `io.legere:pdfiumandroid` (PdfiumAndroidKt)**, Apache-2.0, a Kotlin-first PDFium binding with a coroutine (suspend) API and a plain non-suspend API. It is a *low-level binding* (document, page, bitmap rendering with arbitrary region and scale), which suits Pizzinotta's custom reader `View`. Use it from Maven Central, and pin the latest stable version at build time (1.0.32 was current when this PRD was written; its declared minimum is API 24, which is compatible with this app's API 26 minimum).
 - **Do not use** `barteksc/AndroidPdfViewer` or its many forks. The upstream is abandoned and the forks are fragmented, and a ready-made viewer widget would conflict with the custom gesture, zoom and queue behaviour specified in section 3.4.
-- **16 KB page size:** Google Play requires native libraries to support 16 KB memory pages for apps targeting recent Android versions. The implementing agent must **verify that the chosen PDFium binary is 16 KB-aligned** (for example by checking the `.so` ELF alignment, or with Android Studio's APK Analyzer) before relying on it. If it is not, build or choose an aligned alternative, keeping the licence constraint above.
-- **APK size:** PDFium ships native libraries per ABI. Use ABI splits or an Android App Bundle so users only download their own ABI, in line with the 10 MB APK budget.
+- **16 KB page size (best effort):** Google Play requires native libraries to support 16 KB memory pages for apps targeting recent Android versions. This is treated as a **pre-publish checklist item, not a Phase 1 build gate** — the app builds and runs fine regardless of alignment. We aim for a 16 KB-aligned PDFium binary; if publishing on a recent target SDK becomes a goal, verify alignment (`.so` ELF check / APK Analyzer) and align or swap to a permissively-licensed alternative before release. The licence constraint above still applies.
+- **APK size:** PDFium ships native libraries per ABI. Use ABI splits or an Android App Bundle so users only download their own ABI. Keeping the APK small is best effort, not a hard requirement (see section 2.1).
 - Reader architecture must allow a different page *layout* to be added later without rewriting page rendering. Layout and rendering are separate concerns.
 - **Playlist, queue and navigation-boundary logic must be plain Kotlin classes with no Android dependencies**, so unit tests can be added cheaply in Phase 4.
 - **Zero runtime permissions** in Phase 1.
@@ -71,6 +71,7 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 - Import is **copy-only** into **app-private internal storage**. The app does not index or read from external folders in place.
 - Entry points: an in-app multi-select file picker; Android share intent; "Open with" for `application/pdf`. All three use the same pipeline.
 - On import, compute the SHA-256 hash, page count, and UUID.
+- Each PDF is copied to app-private storage as `<uuid>.pdf`. The `contentHash` is stored in the database and checked **before** writing, so an identical file is never duplicated on disk (dedup-before-write). Identity (`uuid`) is independent of content (`hash`).
 
 **Acceptance criteria**
 - Given the user selects 5 valid PDFs in the picker, when import completes, then all 5 appear in the library.
@@ -167,7 +168,7 @@ Hidden by default. Contains: back button, song title, "page X / Y", queue positi
 - The app UI follows the **system light/dark theme**.
 - There is **no settings screen** in Phase 1.
 - No analytics, no crash-reporting SDK, no network access.
-- No automated tests in Phase 1 (see Phase 4), but logic must be structured as in section 2.2.
+- Automated unit tests for pure-Kotlin logic (domain records, repositories via fakes) are written **as we develop each component**, not deferred to Phase 4. Logic must still be structured as in section 2.2 so it stays testable. Instrumented tests for reader tap/gesture behaviour remain Phase 4 (see Phase 4).
 
 ---
 
