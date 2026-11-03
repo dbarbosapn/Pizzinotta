@@ -14,13 +14,41 @@ class UriImportSource(
 
     private fun resolveName(): String {
         resolver.query(uri, null, null, null, null)?.use { cursor ->
-            val index = cursor.getColumnIndex("display_name")
-            if (index >= 0 && cursor.moveToFirst()) {
-                val name = cursor.getString(index)
-                if (!name.isNullOrEmpty()) return name
+            if (cursor.moveToFirst()) {
+                for (column in NAME_COLUMNS) {
+                    val index = cursor.getColumnIndex(column)
+                    if (index >= 0) {
+                        cursor.getString(index)?.let { raw ->
+                            basenameOf(raw)?.takeIf { it.isNotEmpty() }?.let { return it }
+                        }
+                    }
+                }
             }
         }
-        return uri.lastPathSegment?.substringBeforeLast('.')?.takeIf { it.isNotEmpty() }
-            ?: "document.pdf"
+        uri.lastPathSegment?.let { segment ->
+            val base = basenameOf(decode(segment))
+            if (!base.isNullOrEmpty() && base.indexOf(':') < 0) return base
+        }
+        return "document.pdf"
+    }
+
+    private companion object {
+        private val NAME_COLUMNS = listOf("_display_name", "display_name", "filename")
+    }
+
+    private fun decode(segment: String): String =
+        try {
+            java.net.URLDecoder.decode(segment, "UTF-8")
+        } catch (_: IllegalArgumentException) {
+            segment
+        }
+
+    private fun basenameOf(path: String?): String? {
+        if (path.isNullOrEmpty()) return null
+        val trimmed = path.trim().trimEnd('/', '\\')
+        if (trimmed.isEmpty()) return null
+        val separator =
+            trimmed.lastIndexOf('/').coerceAtLeast(trimmed.lastIndexOf('\\'))
+        return if (separator >= 0) trimmed.substring(separator + 1) else trimmed
     }
 }

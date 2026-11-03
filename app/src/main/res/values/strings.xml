@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">Pizzinotta</string>
+
+    <string name="library">Library</string>
+    <string name="playlists">Playlists</string>
+
+    <string name="import_import">Import</string>
+    <string name="search_hint">Search titles</string>
+    <string name="cancel">Cancel</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_recently_opened">Recently opened</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="song_menu_desc">Song options</string>
+
+    <string name="no_songs_title">No songs yet</string>
+    <string name="no_songs_subtitle">Import PDFs from your device to start building your library.</string>
+    <string name="no_results_title">No matches</string>
+    <string name="no_results_subtitle">Nothing titled “%1$s” matched your search.</string>
+
+    <string name="rename_dialog_title">Rename song</string>
+    <string name="rename_label">Title</string>
+    <string name="save">Save</string>
+
+    <string name="delete_confirm_title">Delete songs</string>
+    <string name="delete_confirm_message">Delete %1$d songs? This removes them from all playlists and deletes the files.</string>
+
+    <string name="coming_soon">Coming in a later step</string>
+    <string name="deleted_count">%1$d deleted</string>
+    <string name="import_summary">%1$d imported, %2$d skipped, %3$d failed</string>
+    <string name="selected_count">%1$d selected</string>
 </resources>

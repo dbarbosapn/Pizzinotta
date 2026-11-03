@@ -85,7 +85,6 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 - A flat list of all songs. No folders, tags, composer or other metadata.
 - Display name defaults to the filename and is **renameable** (display title only; original filename is kept).
 - **Search** by title. **Sort** by name or recently opened.
-- First-page **thumbnails** may be generated lazily and cached; if they threaten the performance budgets, omit them.
 - **Long-press** a song to enter multi-select mode; the action bar offers "Add to playlist" (create new or pick existing) and "Delete".
 - **Delete** shows a confirm dialog and removes the song from every playlist.
 
