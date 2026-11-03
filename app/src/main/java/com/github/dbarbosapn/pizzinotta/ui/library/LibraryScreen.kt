@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,10 +49,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.dbarbosapn.pizzinotta.R
+import com.github.dbarbosapn.pizzinotta.data.domain.Playlist
 import com.github.dbarbosapn.pizzinotta.data.domain.Song
 import com.github.dbarbosapn.pizzinotta.data.domain.SongOrder
 import com.github.dbarbosapn.pizzinotta.data.import.ImportResult
 import com.github.dbarbosapn.pizzinotta.data.import.UriImportSource
+import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,6 +64,8 @@ fun LibraryScreen(
     modifier: Modifier = Modifier,
 ) {
     val ui by viewModel.uiState.collectAsState()
+    val playlists by viewModel.playlists.collectAsState(initial = emptyList())
+    val playlistCounts by viewModel.playlistCounts.collectAsState(initial = emptyMap())
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val localContext = LocalContext.current
@@ -95,6 +100,7 @@ fun LibraryScreen(
     var renameTarget by remember { mutableStateOf<Song?>(null) }
     var deleteTarget by remember { mutableStateOf<Song?>(null) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
+    var addToPlaylistTargets by remember { mutableStateOf<List<Song>?>(null) }
 
     Scaffold(
         modifier = modifier,
@@ -104,7 +110,8 @@ fun LibraryScreen(
                     count = ui.selection.size,
                     onClose = viewModel::clearSelection,
                     onAddToPlaylist = {
-                        scope.launch { snackbarHostState.showSnackbar(resString(R.string.coming_soon)) }
+                        val targets = ui.songs.filter { it.id in ui.selection }
+                        if (targets.isNotEmpty()) addToPlaylistTargets = targets
                     },
                     onDelete = { showDeleteConfirm = true },
                 )
@@ -150,11 +157,7 @@ fun LibraryScreen(
                             onLongClick = { viewModel.toggleSelection(song.id) },
                             onRename = { target -> renameTarget = target },
                             onDelete = { deleteTarget = it },
-                            onAddToPlaylist = {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(resString(R.string.coming_soon))
-                                }
-                            },
+                            onAddToPlaylist = { addToPlaylistTargets = listOf(it) },
                         )
                     }
                 }
@@ -193,11 +196,36 @@ fun LibraryScreen(
         DeleteConfirmDialog(
             count = ui.selection.size,
             onDismiss = { showDeleteConfirm = false },
-            onConfirm = {
+                onConfirm = {
+                    scope.launch {
+                        val deleted = viewModel.deleteSelected()
+                        showDeleteConfirm = false
+                        snackbarHostState.showSnackbar(resString(R.string.deleted_count, deleted))
+                    }
+                },
+        )
+    }
+
+    addToPlaylistTargets?.let { targets ->
+        AddToPlaylistSheet(
+            playlists = playlists,
+            counts = playlistCounts,
+            onDismiss = { addToPlaylistTargets = null },
+            onPickPlaylist = { playlist ->
+                addToPlaylistTargets = null
                 scope.launch {
-                    val deleted = viewModel.deleteSelected()
-                    showDeleteConfirm = false
-                    snackbarHostState.showSnackbar(resString(R.string.deleted_count, deleted))
+                    for ((id) in targets) viewModel.addToPlaylist(id, playlist.id)
+                    snackbarHostState.showSnackbar(resString(R.string.added_to_playlist, playlist.name))
+                }
+            },
+            onCreatePlaylist = { newName ->
+                addToPlaylistTargets = null
+                scope.launch {
+                    val created = viewModel.createPlaylist(newName)
+                    if (created != null) {
+                        for ((id) in targets) viewModel.addToPlaylist(id, created.id)
+                        snackbarHostState.showSnackbar(resString(R.string.added_to_playlist, created.name))
+                    }
                 }
             },
         )
@@ -454,6 +482,86 @@ private fun DeleteConfirmDialog(
             Row {
                 TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
                 TextButton(onClick = onConfirm) { Text(stringResource(R.string.delete)) }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AddToPlaylistSheet(
+    playlists: List<Playlist>,
+    counts: Map<UUID, Int>,
+    onDismiss: () -> Unit,
+    onPickPlaylist: (Playlist) -> Unit,
+    onCreatePlaylist: (String) -> Unit,
+) {
+    var creatingNew by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(
+                text = stringResource(R.string.add_to_playlist_dialog_title),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
+
+            if (playlists.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.playlists_empty_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                playlists.forEach { playlist ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { onPickPlaylist(playlist) })
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = playlist.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            val count = counts[playlist.id] ?: 0
+                            Text(
+                                text = if (count == 1) "1 song" else "$count songs",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            if (creatingNew) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text(stringResource(R.string.playlist_name_label)) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { onCreatePlaylist(name) }) {
+                        Text(stringResource(R.string.save))
+                    }
+                }
+            } else {
+                TextButton(
+                    onClick = { creatingNew = true },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.new_playlist)) }
             }
         }
     }

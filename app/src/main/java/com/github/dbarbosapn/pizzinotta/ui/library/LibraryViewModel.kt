@@ -1,6 +1,8 @@
 package com.github.dbarbosapn.pizzinotta.ui.library
 
 import androidx.lifecycle.ViewModel
+import com.github.dbarbosapn.pizzinotta.data.domain.Playlist
+import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistEntry
 import com.github.dbarbosapn.pizzinotta.data.domain.Song
 import com.github.dbarbosapn.pizzinotta.data.domain.SongOrder
 import com.github.dbarbosapn.pizzinotta.data.import.ImportResult
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
@@ -60,6 +63,11 @@ class LibraryViewModel(
                 if (query.isBlank()) songRepository.observeAll(currentOrder)
                 else songRepository.observeSearch(query)
             }
+
+    val playlists: Flow<List<Playlist>> = playlistRepository.observeAll()
+
+    val playlistCounts: Flow<Map<UUID, Int>> =
+        playlistRepository.observeCounts().map { counts -> counts.associate { it.playlistId to it.count } }
 
     private val _uiState = MutableStateFlow(LibraryUiState())
 
@@ -136,6 +144,21 @@ class LibraryViewModel(
         playlistRepository.deleteEntriesForSong(song.id)
         songRepository.delete(song)
         fileStorage.remove(song.filePath)
+    }
+
+    suspend fun addToPlaylist(songId: UUID, playlistId: UUID) {
+        if (playlistRepository.hasEntry(playlistId, songId)) return
+        val position = playlistRepository.countEntries(playlistId)
+        playlistRepository.insertEntry(PlaylistEntry(playlistId, songId, position))
+    }
+
+    suspend fun createPlaylist(name: String): Playlist? {
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) return null
+        val now = System.currentTimeMillis()
+        val playlist = Playlist(id = UUID.randomUUID(), name = trimmed, createdAt = now, updatedAt = now)
+        playlistRepository.insert(playlist)
+        return playlist
     }
 
     fun importSources(sources: List<ImportSource>): Flow<ImportResult> =

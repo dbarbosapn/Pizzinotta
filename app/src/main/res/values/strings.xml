@@ -9,13 +9,18 @@
     <string name="import_import">Import</string>
     <string name="search_hint">Search titles</string>
     <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
     <string name="sort_by">Sort by</string>
     <string name="sort_name">Name</string>
     <string name="sort_recently_opened">Recently opened</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="play">Play</string>
     <string name="song_menu_desc">Song options</string>
+    <string name="add_to_playlist_dialog_title">Add to playlist</string>
+    <string name="new_playlist">New playlist</string>
+    <string name="added_to_playlist">Added to %1$s</string>
 
     <string name="no_songs_title">No songs yet</string>
     <string name="no_songs_subtitle">Import PDFs from your device to start building your library.</string>
@@ -28,6 +33,21 @@
 
     <string name="delete_confirm_title">Delete songs</string>
     <string name="delete_confirm_message">Delete %1$d songs? This removes them from all playlists and deletes the files.</string>
+
+    <string name="playlists_empty_title">No playlists yet</string>
+    <string name="playlists_empty_subtitle">Create a playlist to organize your songs, or add songs from the library.</string>
+    <string name="playlist_detail_empty_title">This playlist is empty</string>
+    <string name="playlist_detail_empty_subtitle">Go to the library to add songs.</string>
+    <string name="reorder_hint">Drag a song up or down to reorder it</string>
+    <string name="playlist_create_dialog_title">New playlist</string>
+    <string name="playlist_name_label">Name</string>
+    <string name="rename_playlist_dialog_title">Rename playlist</string>
+    <string name="delete_playlist_title">Delete playlist?</string>
+    <string name="delete_playlist_message">Delete “%1$s”? This removes it from your playlists.</string>
+    <string name="remove_all_songs">Remove all songs</string>
+    <string name="remove_from_playlist">Remove from playlist</string>
+    <string name="clear_playlist_title">Remove all songs?</string>
+    <string name="clear_playlist_message">Remove all %1$d songs from this playlist? They stay in your library.</string>
 
     <string name="coming_soon">Coming in a later step</string>
     <string name="deleted_count">%1$d deleted</string>

@@ -4,6 +4,8 @@ import com.github.dbarbosapn.pizzinotta.data.domain.Playlist
 import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistEntry
 import com.github.dbarbosapn.pizzinotta.data.room.dao.PlaylistDao
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntity
+import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
+import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistSongProjection
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -61,6 +63,19 @@ class PlaylistRepositoryTest {
             val idx = entries.indexOfFirst { it.playlistId == playlistId && it.songId == songId }
             if (idx >= 0) entries[idx] = entries[idx].copy(position = position)
         }
+
+        override fun observePlaylistSongs(playlistId: UUID): Flow<List<PlaylistSongProjection>> =
+            flowOf(emptyList())
+
+        override fun observeCounts(): Flow<List<PlaylistCount>> =
+            flowOf(emptyList())
+
+        override suspend fun deleteEntriesForPlaylist(playlistId: UUID) {
+            entries.removeAll { it.playlistId == playlistId }
+        }
+
+        override suspend fun countEntries(playlistId: UUID): Int =
+            entries.count { it.playlistId == playlistId }
     }
 
     private fun newPlaylist(name: String) =

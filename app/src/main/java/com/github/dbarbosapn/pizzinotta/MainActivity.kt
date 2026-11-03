@@ -18,6 +18,8 @@ import com.github.dbarbosapn.pizzinotta.ui.import.ImportViewModel
 import com.github.dbarbosapn.pizzinotta.ui.import.ImportViewModelFactory
 import com.github.dbarbosapn.pizzinotta.ui.library.LibraryViewModel
 import com.github.dbarbosapn.pizzinotta.ui.library.LibraryViewModelFactory
+import com.github.dbarbosapn.pizzinotta.ui.playlists.PlaylistsViewModel
+import com.github.dbarbosapn.pizzinotta.ui.playlists.PlaylistsViewModelFactory
 import com.github.dbarbosapn.pizzinotta.ui.theme.PizzinottaTheme
 import kotlinx.coroutines.launch
 
@@ -30,12 +32,19 @@ class MainActivity : ComponentActivity() {
         ViewModelProvider(this, LibraryViewModelFactory(application))[LibraryViewModel::class.java]
     }
 
+    private val playlistsViewModel by lazy {
+        ViewModelProvider(this, PlaylistsViewModelFactory(application))[PlaylistsViewModel::class.java]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PizzinottaTheme {
-                PizzinottaNavGraph(libraryViewModel = libraryViewModel)
+                PizzinottaNavGraph(
+                    libraryViewModel = libraryViewModel,
+                    playlistsViewModel = playlistsViewModel,
+                )
             }
         }
         handleIntent(intent)

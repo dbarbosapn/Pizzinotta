@@ -2,6 +2,8 @@ package com.github.dbarbosapn.pizzinotta.ui.library
 
 import com.github.dbarbosapn.pizzinotta.data.domain.Playlist
 import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistEntry
+import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistSong
+import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
 import com.github.dbarbosapn.pizzinotta.data.domain.Song
 import com.github.dbarbosapn.pizzinotta.data.domain.SongOrder
 import com.github.dbarbosapn.pizzinotta.data.import.PdfImporter
@@ -68,6 +70,12 @@ class LibraryViewModelTest {
         override fun observeEntries(playlistId: UUID): Flow<List<PlaylistEntry>> =
             flowOf(entries.filter { it.playlistId == playlistId })
 
+        override fun observePlaylistSongs(playlistId: UUID): Flow<List<PlaylistSong>> =
+            flowOf(emptyList())
+
+        override fun observeCounts(): Flow<List<PlaylistCount>> =
+            flowOf(emptyList())
+
         override suspend fun hasEntry(playlistId: UUID, songId: UUID) =
             entries.any { it.playlistId == playlistId && it.songId == songId }
 
@@ -79,12 +87,19 @@ class LibraryViewModelTest {
             entries.remove(entry)
         }
 
+        override suspend fun removeAllEntries(playlistId: UUID) {
+            entries.removeAll { it.playlistId == playlistId }
+        }
+
         override suspend fun deleteEntriesForSong(songId: UUID) {
             entries.removeAll { it.songId == songId }
             deletedSongs.add(songId)
         }
 
         override suspend fun setOrder(playlistId: UUID, songIds: List<UUID>) {}
+
+        override suspend fun countEntries(playlistId: UUID): Int =
+            entries.count { it.playlistId == playlistId }
     }
 
     private class FakeFileStorage : FileStorage {
