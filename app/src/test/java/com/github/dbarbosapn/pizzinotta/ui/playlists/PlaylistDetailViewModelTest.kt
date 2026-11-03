@@ -14,6 +14,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class PlaylistDetailViewModelTest {
 
@@ -130,7 +131,7 @@ class PlaylistDetailViewModelTest {
         assertTrue(vm.repo.playlistSongs.isEmpty())
     }
 
-    private class DeletingPlaylistRepository(private val id: UUID) : PlaylistRepository {
+    private class DeletingPlaylistRepository : PlaylistRepository {
         override fun observeAll(): Flow<List<Playlist>> = flowOf(emptyList())
 
         override fun observeById(id: UUID): Flow<Playlist> = throw IllegalStateException(
@@ -166,11 +167,11 @@ class PlaylistDetailViewModelTest {
     @Test
     fun `deleting the playlist does not crash when observeById returns no row`() = runBlocking {
         val id = UUID.randomUUID()
-        val repo = DeletingPlaylistRepository(id)
+        val repo = DeletingPlaylistRepository()
         val vm = PlaylistDetailViewModel(id, repo)
 
         // Give the init collector a chance to observe the empty/single-row failure.
-        kotlinx.coroutines.delay(100)
+        delay(100.milliseconds)
 
         assertEquals(null, vm.uiState.value.playlist)
     }
