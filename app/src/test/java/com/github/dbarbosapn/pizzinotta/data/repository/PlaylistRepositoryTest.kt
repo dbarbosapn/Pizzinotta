@@ -7,6 +7,7 @@ import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntity
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistSongProjection
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
+import com.github.dbarbosapn.pizzinotta.data.room.entity.SongEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.first
@@ -22,6 +23,7 @@ class PlaylistRepositoryTest {
     private class FakePlaylistDao : PlaylistDao {
         private val playlists = mutableListOf<PlaylistEntity>()
         private val entries = mutableListOf<PlaylistEntryEntity>()
+        private val songs = mutableListOf<SongEntity>()
 
         override fun observeAll(): Flow<List<PlaylistEntity>> = flowOf(playlists.toList())
 
@@ -76,6 +78,11 @@ class PlaylistRepositoryTest {
 
         override suspend fun countEntries(playlistId: UUID): Int =
             entries.count { it.playlistId == playlistId }
+
+        override suspend fun songAt(playlistId: UUID, offset: Int): SongEntity? {
+            val ordered = entries.filter { it.playlistId == playlistId }.sortedBy { it.position }
+            return ordered.getOrNull(offset)?.let { entry -> songs.firstOrNull { it.id == entry.songId } }
+        }
     }
 
     private fun newPlaylist(name: String) =

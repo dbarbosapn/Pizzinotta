@@ -48,7 +48,7 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 - Phases 1 and 2 must build and run with **no Firebase configuration** (see Phase 3).
 
 ### 2.3 Data-model sketch (entities and keys, not a schema mandate)
-- **Song**: `id` (UUID, stable local identity), `contentHash` (SHA-256 of the file), `displayTitle` (editable; defaults to filename), `originalFilename`, `pageCount`, `addedAt`, `lastOpenedAt`, `lastPage`, `filePath` (app-private storage). Phase 2+ will add: Drive file ID, "no longer on Drive" flag. Phase 3 will add: sync state, cloud path.
+- **Song**: `id` (UUID, stable local identity), `contentHash` (SHA-256 of the file), `displayTitle` (editable; defaults to filename), `originalFilename`, `pageCount`, `addedAt`, `lastOpenedAt`, `filePath` (app-private storage). Phase 2+ will add: Drive file ID, "no longer on Drive" flag. Phase 3 will add: sync state, cloud path.
 - **Playlist**: `id` (UUID), `name`, `createdAt`, `updatedAt`.
 - **PlaylistEntry**: `playlistId`, `songId`, `position`. A song appears at most once per playlist; a song can be in many playlists.
 - **Annotation (Phase 2)**: `id`, `songId`, `pageIndex`, `type`, geometry in **normalised page coordinates (0 to 1)**, colour, thickness, `createdAt`. Always stored relative to the original page, never to screen pixels or zoom, so it is valid at any zoom or screen size.
@@ -114,7 +114,7 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 - **One page at a time**, **fit to screen** (whole page visible, centred, letterboxed if aspect ratios differ).
 - **Portrait and landscape** supported; orientation follows the device; no lock toggle. **No two-page spread.**
 - **Immersive mode** (system bars hidden). **Screen stays awake** while the reader is open.
-- The last viewed page of each song is **remembered** and restored when the song is reopened. Zoom is not remembered.
+- The reader always starts at the **first page** of the selected song. The last-viewed page is **not** remembered or restored: leaving and re-opening a song starts you over at page 1, and you turn forward from there. Zoom is not remembered.
 
 #### 3.4.2 Zoom
 - Pinch to zoom about the **pinch focal point**. Minimum zoom = fit; **maximum = 4x**; no zooming out below fit.

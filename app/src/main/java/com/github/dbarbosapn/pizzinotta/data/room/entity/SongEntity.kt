@@ -13,6 +13,5 @@ data class SongEntity(
     val pageCount: Int,
     val addedAt: Long,
     val lastOpenedAt: Long?,
-    val lastPage: Int,
     val filePath: String
 )

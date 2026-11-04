@@ -88,7 +88,7 @@ class PdfImporterTest {
         val (tempDir, destDir) = tempDirs()
         val bytes = "duplicate-bytes".toByteArray()
         val repo = FakeSongRepository().apply {
-            songs.add(Song(UUID.randomUUID(), sha256(bytes), "Existing", "Existing.pdf", 2, 0, null, 0, "/x/Existing.pdf"))
+            songs.add(Song(UUID.randomUUID(), sha256(bytes), "Existing", "Existing.pdf", 2, 0, null, "/x/Existing.pdf"))
         }
 
         val results = PdfImporter(repo, FakePdfValidator().apply { pages = 4 }, tempDir, destDir)

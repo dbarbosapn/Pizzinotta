@@ -24,6 +24,24 @@ interface SongDao {
     @Query("SELECT * FROM songs WHERE id = :id")
     fun observeById(id: UUID): Flow<SongEntity>
 
+    @Query("SELECT COUNT(*) FROM songs")
+    suspend fun totalCount(): Int
+
+    @Query("SELECT * FROM songs ORDER BY displayTitle COLLATE NOCASE ASC LIMIT 1 OFFSET :offset")
+    suspend fun titleAt(offset: Int): SongEntity?
+
+    @Query("SELECT * FROM songs ORDER BY lastOpenedAt IS NULL, lastOpenedAt DESC LIMIT 1 OFFSET :offset")
+    suspend fun recentlyOpenedAt(offset: Int): SongEntity?
+
+    @Query("SELECT COUNT(*) FROM songs WHERE displayTitle LIKE '%' || :query || '%' COLLATE NOCASE")
+    suspend fun searchCount(query: String): Int
+
+    @Query("SELECT * FROM songs WHERE displayTitle LIKE '%' || :query || '%' COLLATE NOCASE ORDER BY displayTitle COLLATE NOCASE ASC LIMIT 1 OFFSET :offset")
+    suspend fun searchByTitleAt(query: String, offset: Int): SongEntity?
+
+    @Query("SELECT * FROM songs WHERE displayTitle LIKE '%' || :query || '%' COLLATE NOCASE ORDER BY lastOpenedAt IS NULL, lastOpenedAt DESC LIMIT 1 OFFSET :offset")
+    suspend fun searchByRecentlyOpenedAt(query: String, offset: Int): SongEntity?
+
     @Query("SELECT COUNT(*) > 0 FROM songs WHERE contentHash = :contentHash")
     suspend fun existsByContentHash(contentHash: String): Boolean
 

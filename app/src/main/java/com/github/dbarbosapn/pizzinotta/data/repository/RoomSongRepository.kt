@@ -39,7 +39,6 @@ class RoomSongRepository(private val dao: SongDao) : SongRepository {
         pageCount = pageCount,
         addedAt = addedAt,
         lastOpenedAt = lastOpenedAt,
-        lastPage = lastPage,
         filePath = filePath
     )
 
@@ -51,7 +50,6 @@ class RoomSongRepository(private val dao: SongDao) : SongRepository {
         pageCount = pageCount,
         addedAt = addedAt,
         lastOpenedAt = lastOpenedAt,
-        lastPage = lastPage,
         filePath = filePath
     )
 }

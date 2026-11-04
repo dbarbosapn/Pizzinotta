@@ -18,7 +18,6 @@ class SongQueueTest {
         pageCount = 1,
         addedAt = index.toLong(),
         lastOpenedAt = null,
-        lastPage = 0,
         filePath = "path/song-$index.pdf",
     )
 

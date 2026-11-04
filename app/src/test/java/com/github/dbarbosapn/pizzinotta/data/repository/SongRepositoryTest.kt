@@ -50,6 +50,27 @@ class SongRepositoryTest {
         override suspend fun delete(song: SongEntity) {
             songs.remove(song)
         }
+
+        override suspend fun totalCount(): Int = songs.size
+
+        override suspend fun titleAt(offset: Int): SongEntity? =
+            songs.sortedWith(compareBy { it.displayTitle.lowercase() }).getOrNull(offset)
+
+        override suspend fun recentlyOpenedAt(offset: Int): SongEntity? =
+            songs.sortedByDescending { it.lastOpenedAt ?: Long.MIN_VALUE }.getOrNull(offset)
+
+        override suspend fun searchCount(query: String): Int =
+            songs.count { it.displayTitle.contains(query, ignoreCase = true) }
+
+        override suspend fun searchByTitleAt(query: String, offset: Int): SongEntity? =
+            songs.filter { it.displayTitle.contains(query, ignoreCase = true) }
+                .sortedWith(compareBy { it.displayTitle.lowercase() })
+                .getOrNull(offset)
+
+        override suspend fun searchByRecentlyOpenedAt(query: String, offset: Int): SongEntity? =
+            songs.filter { it.displayTitle.contains(query, ignoreCase = true) }
+                .sortedByDescending { it.lastOpenedAt ?: Long.MIN_VALUE }
+                .getOrNull(offset)
     }
 
     private fun newSong(title: String, hash: String = "$title-hash"): Song =
@@ -61,7 +82,6 @@ class SongRepositoryTest {
             pageCount = 3,
             addedAt = 0,
             lastOpenedAt = null,
-            lastPage = 0,
             filePath = "/files/$title.pdf"
         )
 
@@ -102,11 +122,10 @@ class SongRepositoryTest {
         val song = newSong("Old")
         repo.insert(song)
 
-        repo.update(song.copy(displayTitle = "New", lastPage = 4))
+        repo.update(song.copy(displayTitle = "New"))
 
         val updated = repo.observeById(song.id).first()
         assertEquals("New", updated.displayTitle)
-        assertEquals(4, updated.lastPage)
     }
 
     @Test

@@ -130,7 +130,6 @@ class LibraryViewModelTest {
             pageCount = 3,
             addedAt = 0L,
             lastOpenedAt = null,
-            lastPage = 0,
             filePath = "/files/$title.pdf",
         )
 

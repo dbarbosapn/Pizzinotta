@@ -99,7 +99,6 @@ class PdfImporter(
                 pageCount = pageCount,
                 addedAt = System.currentTimeMillis(),
                 lastOpenedAt = null,
-                lastPage = 0,
                 filePath = destinationFile.absolutePath,
             )
         )

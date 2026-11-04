@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
 fun LibraryScreen(
     viewModel: LibraryViewModel,
     onNavigateToPlaylists: () -> Unit,
+    onOpenSong: (startIndex: Int, query: String, order: SongOrder) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val ui by viewModel.uiState.collectAsState()
@@ -149,9 +150,8 @@ fun LibraryScreen(
                                 if (ui.multiSelecting) {
                                     viewModel.toggleSelection(song.id)
                                 } else {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(resString(R.string.coming_soon))
-                                    }
+                                    val index = ui.songs.indexOfFirst { it.id == song.id }
+                                    if (index >= 0) onOpenSong(index, ui.searchQuery, ui.order)
                                 }
                             },
                             onLongClick = { viewModel.toggleSelection(song.id) },

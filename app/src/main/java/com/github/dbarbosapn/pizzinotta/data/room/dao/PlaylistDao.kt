@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntity
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
+import com.github.dbarbosapn.pizzinotta.data.room.entity.SongEntity
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistSongProjection
 import kotlinx.coroutines.flow.Flow
@@ -50,6 +51,14 @@ interface PlaylistDao {
 
     @Query("SELECT COUNT(*) FROM playlist_entries WHERE playlistId = :playlistId")
     suspend fun countEntries(playlistId: UUID): Int
+
+    @Query(
+        "SELECT songs.* FROM playlist_entries " +
+            "INNER JOIN songs ON playlist_entries.songId = songs.id " +
+            "WHERE playlist_entries.playlistId = :playlistId " +
+            "ORDER BY playlist_entries.position ASC LIMIT 1 OFFSET :offset",
+    )
+    suspend fun songAt(playlistId: UUID, offset: Int): SongEntity?
 
     @Query("SELECT COUNT(*) > 0 FROM playlist_entries WHERE playlistId = :playlistId AND songId = :songId")
     suspend fun hasEntry(playlistId: UUID, songId: UUID): Boolean

@@ -90,7 +90,6 @@ class RoomPlaylistRepository(private val dao: PlaylistDao) : PlaylistRepository 
         pageCount = pageCount,
         addedAt = addedAt,
         lastOpenedAt = lastOpenedAt,
-        lastPage = lastPage,
         filePath = filePath
     )
 }
