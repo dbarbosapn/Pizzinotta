@@ -1,13 +1,15 @@
 package com.github.dbarbosapn.pizzinotta.ui.reader
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.TextureView
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.Condition
@@ -24,10 +26,28 @@ import kotlin.concurrent.withLock
  * navigation — it stays opaque and pops abruptly when finally detached. A TextureView is composited
  * in-process, so it fades with the rest of the screen.
  */
+@SuppressLint("ClickableViewAccessibility")
 class ReaderSurfaceView(context: Context) : TextureView(context), TextureView.SurfaceTextureListener {
 
+    var onGesture: ((ReaderGesture) -> Unit)? = null
+
+    private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean = true
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            forwardTap(e.x) { ReaderGesture.Tap(it) }
+            return true
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            forwardTap(e.x) { ReaderGesture.DoubleTap(it) }
+            return true
+        }
+    })
+
     init {
-        setSurfaceTextureListener(this)
+        surfaceTextureListener = this
+        setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -137,6 +157,11 @@ class ReaderSurfaceView(context: Context) : TextureView(context), TextureView.Su
         } finally {
             unlockCanvasAndPost(canvas)
         }
+    }
+
+    private fun forwardTap(x: Float, build: (Zone) -> ReaderGesture) {
+        if (surfaceWidth <= 0) return
+        onGesture?.invoke(build(TapZone.at(x, surfaceWidth)))
     }
 
     companion object {

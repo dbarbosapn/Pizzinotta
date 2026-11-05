@@ -72,7 +72,7 @@ Build in this order and stop after each component for human review/commit.
 | 3 | Library screen       | Flat list, rename, search, sort, multi-select delete, import trigger                                                           |
 | 4 | Playlists            | List → detail, drag-reorder / swipe-remove, rename/delete, missing-file drop, queue to reader                                  |
 | 5 | Reader skeleton      | pdfium → one page fit in `SurfaceView`; pre-render queue + bitmap cache as pure Kotlin                                         |
-| 6 | Full reader gestures | pinch zoom, pan, tap zones, boundaries/toasts, bottom bar, immersive + keep-awake                                              |
+| 6 | Full reader gestures | tap zones, boundaries/toasts, bottom bar, immersive + keep-awake |
 
 ## 6. Decisions log
 
@@ -85,3 +85,4 @@ Build in this order and stop after each component for human review/commit.
 - **2026-11-02** — PDF engine: pdfiumandroid (Apache-2.0). No AGPL/GPL dependencies.
 - **2026-11-02** — On-disk storage: files named `<uuid>.pdf`; `contentHash` is the pre-write dedup key + sync metadata in the DB.
 - **2026-11-02** — Testing: unit tests written as we develop each component (JVM/JUnit4). Domain records and repositories are tested via in-memory fake DAOs/clients; no emulator needed. Instrumented reader tap/gesture tests remain Phase 4.
+- **2026-11-04** — Reader zoom & pan deferred to Phase 2. Phase 1 reader gestures cover tap zones, boundaries/toasts, bottom bar, immersive mode and keep-awake only; no pinch-zoom or pan in the MVP. Double-tap-center "fit" is dropped from the Phase 1 tap-zone table.

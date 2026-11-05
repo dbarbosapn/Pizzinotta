@@ -82,7 +82,7 @@ fun PizzinottaNavGraph(
             val startIndex = backStackEntry.arguments?.getInt(ARG_START_INDEX) ?: 0
             val app = LocalContext.current.applicationContext as PizzinottaApplication
             val loader = PlaylistQueueLoader(app.database.playlistDao(), playlistId)
-            val viewModel: ReaderViewModel = viewModel(factory = ReaderViewModelFactory(loader, startIndex))
+            val viewModel: ReaderViewModel = viewModel(factory = ReaderViewModelFactory(loader, startIndex, app))
             ReaderScreen(
                 viewModel = viewModel,
                 onBack = { navController.navigateUp() },
@@ -102,7 +102,7 @@ fun PizzinottaNavGraph(
                 .getOrDefault(SongOrder.TITLE)
             val app = LocalContext.current.applicationContext as PizzinottaApplication
             val loader = LibraryQueueLoader(app.database.songDao(), query, order)
-            val viewModel: ReaderViewModel = viewModel(factory = ReaderViewModelFactory(loader, startIndex))
+            val viewModel: ReaderViewModel = viewModel(factory = ReaderViewModelFactory(loader, startIndex, app))
             ReaderScreen(
                 viewModel = viewModel,
                 onBack = { navController.navigateUp() },

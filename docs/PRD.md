@@ -114,14 +114,9 @@ An open-source Android app for reading sheet music from PDF files. It is fast, l
 - **One page at a time**, **fit to screen** (whole page visible, centred, letterboxed if aspect ratios differ).
 - **Portrait and landscape** supported; orientation follows the device; no lock toggle. **No two-page spread.**
 - **Immersive mode** (system bars hidden). **Screen stays awake** while the reader is open.
-- The reader always starts at the **first page** of the selected song. The last-viewed page is **not** remembered or restored: leaving and re-opening a song starts you over at page 1, and you turn forward from there. Zoom is not remembered.
+- The reader always starts at the **first page** of the selected song. The last-viewed page is **not** remembered or restored: leaving and re-opening a song starts you over at page 1, and you turn forward from there.
 
-#### 3.4.2 Zoom
-- Pinch to zoom about the **pinch focal point**. Minimum zoom = fit; **maximum = 4x**; no zooming out below fit.
-- When zoomed, one-finger drag **pans** (standard touch slop distinguishes taps from drags).
-- Zoom **resets to fit** whenever the page or song changes.
-
-#### 3.4.3 Tap zones
+#### 3.4.2 Tap zones
 Zones are measured against the **screen width**, full height:
 
 | Zone       | Width |
@@ -135,32 +130,27 @@ Gesture detection uses the **OS-default single-tap and double-tap timing**. Ther
 | Gesture    | Zone       | Action                     |
 |------------|------------|----------------------------|
 | Single tap | Center     | Toggle the bottom bar      |
-| Double tap | Center     | Fit the page to the screen |
 | Single tap | Right edge | Next page                  |
 | Single tap | Left edge  | Previous page              |
 | Double tap | Right edge | Next song in the queue     |
 | Double tap | Left edge  | Previous song in the queue |
 
-#### 3.4.4 Boundaries
+#### 3.4.3 Boundaries
 - Single tap on the right edge on the **last page** of a song: **nothing happens**.
 - Single tap on the left edge on the **first page** of a song: **nothing happens**.
 - Next song / previous song always opens at **page 1**.
 - Double tap right edge on the **last song** of the queue: toast **"Double-tap again to start over."** A second double tap within the toast's lifetime opens the first song of the queue. This applies to both playlist queues and the implicit library queue.
 - Double tap left edge on the **first song**: symmetric toast **"Double-tap again to go to the last song."**
 
-#### 3.4.5 Bottom bar
+#### 3.4.4 Bottom bar
 Hidden by default. Contains: back button, song title, "page X / Y", queue position (for example "3 / 12") when applicable, previous-song and next-song buttons.
 
-#### 3.4.6 Reader acceptance criteria
+#### 3.4.5 Reader acceptance criteria
 - Given the reader is on page 3 of 10 at fit zoom, when the user single-taps the right edge, then page 4 is shown at fit zoom.
-- Given the reader is zoomed to 3x on page 3, when the user single-taps the right edge, then page 4 is shown at fit zoom.
 - Given the reader is on page 10 of 10, when the user single-taps the right edge, then nothing changes and no message is shown.
 - Given the user is on page 5 of song B in queue [A, B, C], when they double-tap the right edge, then song C opens at page 1.
 - Given the user is on the last song of the queue, when they double-tap the right edge, then a toast says "Double-tap again to start over", and when they double-tap the right edge again while the toast is visible, then the first song of the queue opens at page 1.
 - Given the bar is hidden, when the user single-taps the center, then the bar appears; and when they single-tap the center again, it hides.
-- Given the page is zoomed and panned, when the user double-taps the center, then the page returns to fit.
-- Given the user pinches in, then the content under the pinch center stays under the fingers, up to the 4x maximum.
-- Given the user drags with one finger while zoomed, then the view pans and no tap action fires.
 - Given the user turns pages in a 100-page, 50 MB scanned PDF on the reference low-end profile, then page turns meet the 150 ms budget.
 
 ### 3.5 Other Phase 1 requirements
@@ -187,6 +177,16 @@ Hidden by default. Contains: back button, song title, "page X / Y", queue positi
 - If a file changes on Drive: re-download it, **keep the same song UUID** so annotations survive.
 - If a file is deleted from Drive: **keep it locally** and flag it "no longer on Drive". Never silently destroy the user's annotated music.
 - Annotations and playlists remain **device-local** in Phase 2.
+
+### 4.3 Reader zoom & pan (deferred from Phase 1)
+
+The pinch-zoom and pan behaviors originally specified for the Phase 1 reader (the zoom subsection, the double-tap-center "fit" tap-zone row, and the matching acceptance criteria) are deferred to this phase.
+
+- Pinch to zoom about the **pinch focal point**. Minimum zoom = fit; **maximum = 4x**; no zooming out below fit.
+- When zoomed, one-finger drag **pans** (standard touch slop distinguishes taps from drags).
+- Zoom **resets to fit** whenever the page or song changes.
+- **Zoom is not remembered**: leaving and re-opening a song starts over at fit; you turn forward from there.
+- Double-tap center fits the page to the screen (resets zoom and pan).
 
 ---
 
