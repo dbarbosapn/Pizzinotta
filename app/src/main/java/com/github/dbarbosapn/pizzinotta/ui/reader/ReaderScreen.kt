@@ -69,13 +69,13 @@ fun ReaderScreen(
                 .onSizeChanged { size -> surface.setSurfaceSize(size.width, size.height) },
         )
         if (state.barVisible) {
-            ReaderBottomBar(
+            ReaderTopBar(
                 state = state,
                 onBack = onBack,
                 onPreviousSong = viewModel::previousSong,
                 onNextSong = viewModel::nextSong,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.TopCenter)
                     .fillMaxWidth(),
             )
         }
@@ -119,7 +119,7 @@ private fun contextAsActivity(context: android.content.Context): Activity? =
     context as? Activity
 
 @Composable
-private fun ReaderBottomBar(
+private fun ReaderTopBar(
     state: ReaderUiState,
     onBack: () -> Unit,
     onPreviousSong: () -> Unit,
