@@ -4,6 +4,7 @@ import com.github.dbarbosapn.pizzinotta.data.domain.Playlist
 import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistEntry
 import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistSong
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -17,6 +18,7 @@ interface PlaylistRepository {
     fun observeEntries(playlistId: UUID): Flow<List<PlaylistEntry>>
     fun observePlaylistSongs(playlistId: UUID): Flow<List<PlaylistSong>>
     fun observeCounts(): Flow<List<PlaylistCount>>
+    fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>>
     suspend fun countEntries(playlistId: UUID): Int
     suspend fun hasEntry(playlistId: UUID, songId: UUID): Boolean
     suspend fun insertEntry(entry: PlaylistEntry)

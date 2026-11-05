@@ -10,6 +10,7 @@ import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntity
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
 import com.github.dbarbosapn.pizzinotta.data.room.entity.SongEntity
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -39,6 +40,8 @@ class RoomPlaylistRepository(private val dao: PlaylistDao) : PlaylistRepository 
         }
 
     override fun observeCounts(): Flow<List<PlaylistCount>> = dao.observeCounts()
+
+    override fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>> = dao.observeSongsWithPlaylists()
 
     override suspend fun countEntries(playlistId: UUID): Int =
         dao.countEntries(playlistId)

@@ -8,6 +8,7 @@ import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
 import com.github.dbarbosapn.pizzinotta.data.room.entity.SongEntity
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistSongProjection
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -73,6 +74,7 @@ class QueueLoaderTest {
         override suspend fun delete(playlist: PlaylistEntity) {}
         override fun observeEntries(playlistId: UUID): Flow<List<PlaylistEntryEntity>> = flowOf(emptyList())
         override fun observeCounts(): Flow<List<PlaylistCount>> = flowOf(emptyList())
+        override fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>> = flowOf(emptyList())
         override fun observePlaylistSongs(playlistId: UUID): Flow<List<PlaylistSongProjection>> = flowOf(emptyList())
         override suspend fun deleteEntriesForPlaylist(playlistId: UUID) { entryIds.clear() }
         override suspend fun countEntries(playlistId: UUID): Int = entryIds.size

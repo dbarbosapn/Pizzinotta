@@ -69,6 +69,13 @@ class LibraryViewModel(
     val playlistCounts: Flow<Map<UUID, Int>> =
         playlistRepository.observeCounts().map { counts -> counts.associate { it.playlistId to it.count } }
 
+    val songPlaylists: Flow<Map<UUID, List<String>>> =
+        playlistRepository.observeSongsWithPlaylists().map { rows ->
+            rows.groupBy { it.songId }.mapValues { (_, names) ->
+                names.map { it.name }.sortedWith(String.CASE_INSENSITIVE_ORDER)
+            }
+        }
+
     private val _uiState = MutableStateFlow(LibraryUiState())
 
     private val uiStateScope = CoroutineScope(Dispatchers.Default + SupervisorJob())

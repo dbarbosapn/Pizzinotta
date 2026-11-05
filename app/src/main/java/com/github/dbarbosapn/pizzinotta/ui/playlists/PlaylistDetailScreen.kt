@@ -221,12 +221,18 @@ private fun SongRow(
             .background(if (isDragging) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
             .shadow(elevation = if (isDragging) 3.dp else 0.dp)
             .clickable(onClick = onNavigate)
-            .then(with(dragScope) { Modifier.draggableHandle() })
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Spacer(modifier = Modifier.size(24.dp))
-        Column(modifier = Modifier.weight(1f).padding(start = 16.dp)) {
+        Icon(
+            painterResource(R.drawable.ic_drag_handle),
+            contentDescription = stringResource(R.string.drag_song_desc),
+            modifier = Modifier
+                .size(24.dp)
+                .padding(end = 8.dp)
+                .then(with(dragScope) { Modifier.draggableHandle() }),
+        )
+        Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
             Text(
                 text = song.displayTitle,
                 style = MaterialTheme.typography.titleMedium,

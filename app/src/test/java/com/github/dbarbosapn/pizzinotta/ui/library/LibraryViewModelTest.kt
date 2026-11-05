@@ -4,6 +4,7 @@ import com.github.dbarbosapn.pizzinotta.data.domain.Playlist
 import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistEntry
 import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistSong
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import com.github.dbarbosapn.pizzinotta.data.domain.Song
 import com.github.dbarbosapn.pizzinotta.data.domain.SongOrder
 import com.github.dbarbosapn.pizzinotta.data.import.PdfImporter
@@ -12,7 +13,9 @@ import com.github.dbarbosapn.pizzinotta.data.repository.PlaylistRepository
 import com.github.dbarbosapn.pizzinotta.data.repository.SongRepository
 import com.github.dbarbosapn.pizzinotta.data.storage.FileStorage
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -57,6 +60,7 @@ class LibraryViewModelTest {
     private class FakePlaylistRepository : PlaylistRepository {
         val entries = mutableListOf<PlaylistEntry>()
         val deletedSongs = mutableSetOf<UUID>()
+        val membershipRows = mutableListOf<SongPlaylistName>()
 
         override fun observeAll(): Flow<List<Playlist>> = flowOf(emptyList())
 
@@ -75,6 +79,9 @@ class LibraryViewModelTest {
 
         override fun observeCounts(): Flow<List<PlaylistCount>> =
             flowOf(emptyList())
+
+        override fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>> =
+            flow { emit(membershipRows.toList()) }
 
         override suspend fun hasEntry(playlistId: UUID, songId: UUID) =
             entries.any { it.playlistId == playlistId && it.songId == songId }
@@ -228,6 +235,23 @@ class LibraryViewModelTest {
         assertEquals(0, deleted)
         assertTrue(vm.songRepo.songs.isNotEmpty())
         assertTrue(vm.storage.removed.isEmpty())
+    }
+
+    @Test
+    fun `songPlaylists maps each song to its playlist names sorted case-insensitively`() = runBlocking {
+        val vm = newViewModel()
+        val a = newSong("A")
+        vm.songRepo.insert(a)
+        vm.playlistRepo.membershipRows.addAll(
+            listOf(
+                SongPlaylistName(a.id, "Rock Ballads"),
+                SongPlaylistName(a.id, "jazz"),
+            ),
+        )
+
+        val result = vm.viewModel.songPlaylists.first()
+
+        assertEquals(listOf("jazz", "Rock Ballads"), result[a.id])
     }
 }
 

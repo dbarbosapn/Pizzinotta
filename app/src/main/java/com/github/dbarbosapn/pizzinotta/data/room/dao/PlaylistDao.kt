@@ -11,6 +11,7 @@ import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
 import com.github.dbarbosapn.pizzinotta.data.room.entity.SongEntity
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistSongProjection
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -36,6 +37,14 @@ interface PlaylistDao {
 
     @Query("SELECT playlistId AS playlistId, CAST(COUNT(*) AS INTEGER) AS count FROM playlist_entries GROUP BY playlistId")
     fun observeCounts(): Flow<List<PlaylistCount>>
+
+    @Query(
+        "SELECT playlist_entries.songId AS songId, playlists.name AS name " +
+            "FROM playlist_entries " +
+            "INNER JOIN playlists ON playlist_entries.playlistId = playlists.id " +
+            "ORDER BY playlists.name COLLATE NOCASE ASC",
+    )
+    fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>>
 
     @Query(
         "SELECT playlist_entries.position AS position, songs.* " +

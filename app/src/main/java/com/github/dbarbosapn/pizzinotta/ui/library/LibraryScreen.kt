@@ -67,6 +67,7 @@ fun LibraryScreen(
     val ui by viewModel.uiState.collectAsState()
     val playlists by viewModel.playlists.collectAsState(initial = emptyList())
     val playlistCounts by viewModel.playlistCounts.collectAsState(initial = emptyMap())
+    val songPlaylists by viewModel.songPlaylists.collectAsState(initial = emptyMap())
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val localContext = LocalContext.current
@@ -146,6 +147,7 @@ fun LibraryScreen(
                             song = song,
                             selected = song.id in ui.selection,
                             multiSelecting = ui.multiSelecting,
+                            playlists = songPlaylists[song.id] ?: emptyList(),
                             onClick = {
                                 if (ui.multiSelecting) {
                                     viewModel.toggleSelection(song.id)
@@ -328,6 +330,7 @@ private fun SongRow(
     song: Song,
     selected: Boolean,
     multiSelecting: Boolean,
+    playlists: List<String>,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     onRename: (Song) -> Unit,
@@ -360,6 +363,16 @@ private fun SongRow(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            if (playlists.isNotEmpty()) {
+                Text(
+                    text = playlists.joinToString(", "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
         }
         Box {
             IconButtonNavigation(

@@ -6,6 +6,7 @@ import com.github.dbarbosapn.pizzinotta.data.domain.PlaylistSong
 import com.github.dbarbosapn.pizzinotta.data.domain.Song
 import com.github.dbarbosapn.pizzinotta.data.repository.PlaylistRepository
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -37,6 +38,8 @@ class PlaylistDetailViewModelTest {
             flowOf(playlistSongs.toList())
 
         override fun observeCounts(): Flow<List<PlaylistCount>> = flowOf(emptyList())
+
+        override fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>> = flowOf(emptyList())
 
         override suspend fun countEntries(playlistId: UUID): Int = playlistSongs.size
 
@@ -147,6 +150,8 @@ class PlaylistDetailViewModelTest {
             flowOf(emptyList())
 
         override fun observeCounts(): Flow<List<PlaylistCount>> = flowOf(emptyList())
+
+        override fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>> = flowOf(emptyList())
 
         override suspend fun countEntries(playlistId: UUID): Int = 0
 

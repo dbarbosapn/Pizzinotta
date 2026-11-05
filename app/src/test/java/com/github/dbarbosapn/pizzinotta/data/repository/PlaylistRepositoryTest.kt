@@ -6,6 +6,7 @@ import com.github.dbarbosapn.pizzinotta.data.room.dao.PlaylistDao
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntity
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistCount
 import com.github.dbarbosapn.pizzinotta.data.room.projection.PlaylistSongProjection
+import com.github.dbarbosapn.pizzinotta.data.room.projection.SongPlaylistName
 import com.github.dbarbosapn.pizzinotta.data.room.entity.PlaylistEntryEntity
 import com.github.dbarbosapn.pizzinotta.data.room.entity.SongEntity
 import kotlinx.coroutines.flow.Flow
@@ -70,6 +71,9 @@ class PlaylistRepositoryTest {
             flowOf(emptyList())
 
         override fun observeCounts(): Flow<List<PlaylistCount>> =
+            flowOf(emptyList())
+
+        override fun observeSongsWithPlaylists(): Flow<List<SongPlaylistName>> =
             flowOf(emptyList())
 
         override suspend fun deleteEntriesForPlaylist(playlistId: UUID) {
