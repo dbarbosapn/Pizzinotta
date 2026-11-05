@@ -262,3 +262,12 @@ These were explicitly considered and rejected. **Do not add them.**
 - Two-page spread
 - Analytics of any kind
 - Custom double-tap timing
+
+---
+
+## 8. Roadmap
+
+### Theme override (planned)
+- **Status:** temporarily hardcoded for local testing; not a shipped feature.
+- Dark mode is currently forced via `darkTheme = true` in `MainActivity` so the dark reader/library UI can be verified before a real setting exists. This is a stopgap: it must be reverted once an explicit theme control is added, and it contradicts section 3.5 ("the app UI follows the system light/dark theme").
+- **Planned:** a persisted light / dark / follow-system choice behind a future Settings screen. Per section 3.5 there is no settings screen in Phase 1, so this belongs to a later phase. Until then, force dark mode through the OS (developer options → Force dark) or revert the hardcode.

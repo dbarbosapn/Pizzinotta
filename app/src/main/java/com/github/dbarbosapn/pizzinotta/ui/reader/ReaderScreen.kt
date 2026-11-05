@@ -137,18 +137,25 @@ private fun ReaderBottomBar(
             Icon(
                 painter = painterResource(R.drawable.ic_arrow_back),
                 contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = state.title, style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = state.title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
             Text(
                 text = stringResource(R.string.reader_page_of, state.pageIndex + 1, state.pageCount),
                 style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             if (state.hasQueue) {
                 Text(
                     text = stringResource(R.string.reader_queue_of, state.songIndex + 1, state.queueSize),
                     style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -157,12 +164,14 @@ private fun ReaderBottomBar(
                 Icon(
                     painter = painterResource(R.drawable.ic_chevron_left),
                     contentDescription = stringResource(R.string.reader_previous_song),
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
             IconButton(onClick = onNextSong, enabled = !state.isLastSong) {
                 Icon(
                     painter = painterResource(R.drawable.ic_chevron_right),
                     contentDescription = stringResource(R.string.reader_next_song),
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }

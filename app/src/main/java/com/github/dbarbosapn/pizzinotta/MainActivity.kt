@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PizzinottaTheme {
+            PizzinottaTheme(darkTheme = true) {
                 PizzinottaNavGraph(
                     libraryViewModel = libraryViewModel,
                     playlistsViewModel = playlistsViewModel,
