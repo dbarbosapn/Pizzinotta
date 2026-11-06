@@ -1,7 +1,7 @@
 # Pizzinotta
 
 <p align="center">
-  <img src="app/src/main/ic_launcher-playstore.png" alt="Pizzinotta app icon" width="120" height="120" />
+  <img src="img/pizzinotta_logo.png" alt="Pizzinotta app icon" width="200" height="200" />
 </p>
 
 <p align="center">
