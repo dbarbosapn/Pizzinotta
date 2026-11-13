@@ -108,6 +108,7 @@ private fun ReaderImmersiveFlags() {
 
 private fun hideSystemBars(window: android.view.Window) {
     val controller = WindowInsetsControllerCompat(window, window.decorView)
+    controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
     controller.hide(WindowInsetsCompat.Type.systemBars())
 }
 
